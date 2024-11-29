@@ -72,14 +72,16 @@ public class ProjectPerformanceTests {
 
         OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
 
+        osBean.getProcessCpuLoad(); // Call to initialize
+
         for(int numberOfObjectsIndex = 0; numberOfObjectsIndex < PerformanceTestUtils.numberOfObjects.length; numberOfObjectsIndex++){
-            long startTime = System.nanoTime();
+            long startTime = System.currentTimeMillis();
             for(int i = 0; i < PerformanceTestUtils.numberOfObjects[numberOfObjectsIndex]; i++){
                 createProject("test_title", true, false, "create project performance test");
             }
+            long endTime = System.currentTimeMillis();
 
-            // wrong values
-            transactionTime[numberOfObjectsIndex] = (System.nanoTime() - startTime) / 1000000.0; // convert to milliseconds
+            transactionTime[numberOfObjectsIndex] = (endTime - startTime);
             memoryUsage[numberOfObjectsIndex] = (double) osBean.getFreeMemorySize() / 1000000; // convert to MB
             cpuUsage[numberOfObjectsIndex] = osBean.getProcessCpuLoad() * 100; // convert to percentage
         }
